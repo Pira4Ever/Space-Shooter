@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO.Ports;
 
 public class Player : MonoBehaviour
 {
@@ -16,8 +15,6 @@ public class Player : MonoBehaviour
     private float _canFire = -1f;
     private int _lives = 3;
     private SpawnManager _spawnManager;
-    SerialPort sPort = new SerialPort("COM5", 9600);
-    int shoot;
 
 
     
@@ -35,22 +32,9 @@ public class Player : MonoBehaviour
 
 
     void Update()
-    {
-        try
-        {
-            sPort.Open();
-        }
-        finally
-        {
-            if (sPort.IsOpen)
-            {
-                shoot = sPort.ReadChar();
-            }
-        }
-        
-        
+    {        
         playerMovement();
-        if (Input.GetKeyDown(KeyCode.Space) || shoot == 1 && Time.time > _canFire)
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
         {
             _canFire = Time.time + _fireRate;
             fireLaser();
@@ -84,7 +68,7 @@ public class Player : MonoBehaviour
 
     void fireLaser()
     {
-        Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity);
+        Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
     }
 
     public void Damage()
@@ -94,7 +78,6 @@ public class Player : MonoBehaviour
         if(_lives < 1)
         {
             _spawnManager.OnPlayerDeath();
-            sPort.Close();
             Destroy(this.gameObject);
         }
     }

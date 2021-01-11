@@ -18,7 +18,7 @@ public class Enemy : MonoBehaviour
             transform.position = new Vector3(Random.Range(-9.75f, 9.75f), 7.18f, transform.position.z);
         }
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if(other.tag == "Player")
         {
