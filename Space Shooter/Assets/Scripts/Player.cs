@@ -9,11 +9,12 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private float _speed = 5f;
+    private float _speedMultiplier = 2f;
     [SerializeField]
     private GameObject _laserPrefab;
     [SerializeField]
     private GameObject _tripleShotPrefab;
-    private float _fireRate = 0.3f;
+    private float _fireRate = 0.2f;
     private float _canFire = -1f;
     private int _lives = 3;
     private SpawnManager _spawnManager;
@@ -46,9 +47,10 @@ public class Player : MonoBehaviour
     {
         float _horizontalInput = Input.GetAxis("Horizontal");
         float _verticalInput = Input.GetAxis("Vertical");
+
         transform.Translate(Vector3.right * Time.deltaTime * _speed * _horizontalInput);
         transform.Translate(Vector3.up * Time.deltaTime * _speed * _verticalInput);
-
+        
         if(transform.position.x > 12.22042f)
         {
             transform.position = new Vector3(-12.63f, transform.position.y, 0);
@@ -100,5 +102,17 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(seconds);
         _isTripleShotActive = false;
+    }
+
+    public void SpeedBoostActive()
+    {
+        _speed *= _speedMultiplier;
+        StartCoroutine(SpeedBoostPowerDownCoroutine(5f));
+    }
+
+    IEnumerator SpeedBoostPowerDownCoroutine(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        _speed /= _speedMultiplier;
     }
 }
