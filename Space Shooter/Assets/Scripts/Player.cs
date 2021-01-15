@@ -19,12 +19,15 @@ public class Player : MonoBehaviour
     private int _lives = 3;
     private SpawnManager _spawnManager;
     private bool _isTripleShotActive = false;
+    private bool _isShieldActive = false;
+    [SerializeField]
+    private GameObject _shieldVisualizer;
     
     void Start()
     {
         transform.position = new Vector3(0, 0, 0);
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
-
+        _shieldVisualizer.SetActive(false);
 
         if (_spawnManager == null)
         {
@@ -59,13 +62,13 @@ public class Player : MonoBehaviour
         {
             transform.position = new Vector3(12.22042f, transform.position.y, 0);
         }
-        if(transform.position.y > 0)
+        if(transform.position.y > 0.5f)
         {
-            transform.position = new Vector3(transform.position.x, 0f, 0);
+            transform.position = new Vector3(transform.position.x, 0.5f, 0);
         }
-        if(transform.position.y < -4.02f)
+        if(transform.position.y < -2.46f)
         {
-            transform.position = new Vector3(transform.position.x, -4.02f, 0);
+            transform.position = new Vector3(transform.position.x, -2.46f, 0);
         }
     }
 
@@ -83,8 +86,16 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
-        _lives--;
-
+        if(_isShieldActive)
+        {
+            _isShieldActive = false;
+            _shieldVisualizer.SetActive(false);
+            return;
+        }
+        else
+        {
+            _lives--;
+        }
         if(_lives < 1)
         {
             _spawnManager.OnPlayerDeath();
@@ -114,5 +125,11 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(seconds);
         _speed /= _speedMultiplier;
+    }
+
+    public void ShieldActive()
+    {
+        _isShieldActive = true;
+        _shieldVisualizer.SetActive(true);
     }
 }
